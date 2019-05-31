@@ -20,7 +20,7 @@ const processCsv = async () => {
       fullResults = 40;
     }
     const draw = drawResults || fullResults;
-    
+
     let processedRow = row.report.replace(row.email, '');
     
     if (draw) { 
@@ -32,8 +32,7 @@ const processCsv = async () => {
   
   (async() => {
     let csv = new ObjectsToCsv(shows);
-    await csv.toDisk('./processed.csv');
-   
+    await csv.toDisk('./processed.csv', {});
   })();
 };
 

@@ -1,4 +1,4 @@
-#Todos for CSV Fun
+# Todos for CSV Fun
 
 [] Turn VCF into contacts.csv
 [] Import contacts.csv into object
