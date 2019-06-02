@@ -1,15 +1,25 @@
 const csvToJson = require('csvtojson');
-const file = './petesBands.csv';
+const iCal = './input/petesBands.csv';
+const mediaRequestForm = './input/MediaRequestForm.csv';
 const ObjectsToCsv = require('objects-to-csv');
+
 
 const processCsv = async () => {
   const shows = await csvToJson({
     delimiter: ';',
     trim:true
-  }).fromFile(file);
+  }).fromFile(iCal);
+
+  const submissions = await csvToJson({
+    trim:true
+  }).fromFile(mediaRequestForm);
   
   shows.forEach((row) => {
-    row.draw = null; //adding a draw field
+    row.draw = null; //adding fields for draw, first name, last name, website and blurb
+    row.name_first = '';
+    row.name_last = '';
+    row.website = '';
+    row.blurb = '';
     let drawResults = row.report.match(/(^|\s)([0-9]+)(?=$|\s)/);
     if (drawResults) {
       drawResults = drawResults[0];
@@ -28,11 +38,20 @@ const processCsv = async () => {
       processedRow = processedRow.replace(/\d+/, ''); 
     }
     row.report = processedRow.trimLeft().trimRight();
+
+    submissions.forEach(submission => {
+      if (row.email === submission.Email) {
+        row.name_first = submission.name_first;
+        row.name_last = submission.name_last;
+        row.website = submission.Website;
+        row.blurb = submission.ShortBlurbAboutYourAct450CharacterLimit;
+      }
+    })
   });
   
   (async() => {
     let csv = new ObjectsToCsv(shows);
-    await csv.toDisk('./processed.csv', {});
+    await csv.toDisk('./output/processed.csv');
   })();
 };
 
